@@ -19,8 +19,10 @@
     "@types/debug": "^0.0.30",
     "@types/fs-extra": "^4.0.0",
     "@types/mocha": "^2.2.45",
+    "@types/tempy": "^0.1.0",
     "chai": "^4.1.2",
     "mocha": "^4.1.0",
+    "tempy": "^0.2.1",
     "ts-node": "^4.1.0",
     "typescript": "^2.4.2"
   },
