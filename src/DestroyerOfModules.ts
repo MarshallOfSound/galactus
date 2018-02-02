@@ -16,7 +16,7 @@ export class DestroyerOfModules {
   }: {
     rootDirectory?: string;
     walker?: Walker;
-    shouldKeepModuleTest: ShouldKeepModuleTest,
+    shouldKeepModuleTest?: ShouldKeepModuleTest,
   }) {
     if (rootDirectory) {
       this.walker = new Walker(rootDirectory);
