@@ -6,12 +6,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "test-prod": "0.0.1"
+    "test-prod": "0.0.1",
+    "@scoped/scoped-prod": "0.0.1"
   },
   "devDependencies": {
-    "test-dev": "0.0.1"
+    "test-dev": "0.0.1",
+    "@scoped/scoped-dev": "0.0.1"
   },
   "optionalDependencies": {
-    "test-optional": "0.0.1"
+    "test-optional": "0.0.1",
+    "@scoped/scoped-optional": "0.0.1"
   }
 }
