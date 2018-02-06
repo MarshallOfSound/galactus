@@ -45,6 +45,20 @@ describe('DestroyerOfModules', () => {
       });
     });
 
+    describe('indirect dependencies', () => {
+      it('keeps production dependencies', async () => {
+        expect(await moduleExists(path.join(nodeModulesPath, 'dep-prod'))).to.be.true;
+      });
+
+      it('keeps optional dependencies', async () => {
+        expect(await moduleExists(path.join(nodeModulesPath, 'dep-optional'))).to.be.true;
+      });
+
+      it('prunes devDependencies', async () => {
+        expect(await moduleExists(path.join(nodeModulesPath, 'dep-dev'))).to.be.false;
+      });
+    });
+
     describe('scoped dependencies', () => {
       it('keeps production dependencies', async () => {
         expect(await moduleExists(path.join(nodeModulesPath, '@scoped/scoped-prod'))).to.be.true;
