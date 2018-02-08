@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "prepublish": "npm run build",
-    "test": "mocha --require ts-node/register test/*_spec.ts"
+    "test": "nyc mocha test/*_spec.ts"
   },
   "keywords": [
     "prune",
@@ -22,6 +22,7 @@
     "@types/tempy": "^0.1.0",
     "chai": "^4.1.2",
     "mocha": "^4.1.0",
+    "nyc": "^11.4.1",
     "tempy": "^0.2.1",
     "ts-node": "^4.1.0",
     "typescript": "^2.4.2"
@@ -30,5 +31,11 @@
     "debug": "^3.1.0",
     "flora-colossus": "^0.0.2",
     "fs-extra": "^4.0.0"
+  },
+  "nyc": {
+    "extension": [".ts"],
+    "instrument": true,
+    "require": ["ts-node/register"],
+    "sourceMap": true
   }
 }
