@@ -23,6 +23,28 @@ describe('DestroyerOfModules', () => {
     let tempPackageDir: string;
     let nodeModulesPath: string;
 
+    function appropriateDependenciesExist(description: string, prefix: string) {
+      describe(description, () => {
+        it('keeps production dependencies', async () => {
+          expect(await moduleExists(path.join(nodeModulesPath, `${prefix}-prod`))).to.be.true;
+        });
+
+        it('keeps optional dependencies', async () => {
+          expect(await moduleExists(path.join(nodeModulesPath, `${prefix}-optional`))).to.be.true;
+        });
+
+        it('prunes devDependencies', async () => {
+          expect(await moduleExists(path.join(nodeModulesPath, '${prefix}-dev'))).to.be.false;
+        });
+      });
+    }
+
+    function appropriateDependencyClassesExist() {
+      appropriateDependenciesExist('direct dependencies', 'test');
+      appropriateDependenciesExist('indirect dependencies', 'dep');
+      appropriateDependenciesExist('scoped dependencies', '@scoped/scoped');
+    }
+
     beforeEach(async () => {
       tempDir = tempy.directory();
       tempPackageDir = path.join(tempDir, 'package');
@@ -40,46 +62,33 @@ describe('DestroyerOfModules', () => {
         await destroyer.destroy();
       });
 
-      describe('direct dependencies', () => {
-        it('keeps production dependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, 'test-prod'))).to.be.true;
-        });
+      appropriateDependencyClassesExist();
+    });
 
-        it('keeps optional dependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, 'test-optional'))).to.be.true;
+    describe('specify walker', () => {
+      beforeEach(async () => {
+        const walker = new galactus.Walker(tempPackageDir);
+        const destroyer = new galactus.DestroyerOfModules({
+          walker: walker,
         });
-
-        it('prunes devDependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, 'test-dev'))).to.be.false;
-        });
+        await destroyer.destroy();
       });
 
-      describe('indirect dependencies', () => {
-        it('keeps production dependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, 'dep-prod'))).to.be.true;
-        });
+      appropriateDependencyClassesExist();
+    });
 
-        it('keeps optional dependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, 'dep-optional'))).to.be.true;
+    describe('specify shouldKeepModuleTest', () => {
+      beforeEach(async () => {
+        const destroyer = new galactus.DestroyerOfModules({
+          rootDirectory: tempPackageDir,
+          shouldKeepModuleTest: (_module: galactus.Module, _isDevDep: boolean) => false,
         });
-
-        it('prunes devDependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, 'dep-dev'))).to.be.false;
-        });
+        await destroyer.destroy();
       });
 
-      describe('scoped dependencies', () => {
-        it('keeps production dependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, '@scoped/scoped-prod'))).to.be.true;
-        });
-
-        it('keeps optional dependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, '@scoped/scoped-optional'))).to.be.true;
-        });
-
-        it('prunes devDependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, '@scoped/scoped-dev'))).to.be.false;
-        });
+      it('should delete node_modules', async () => {
+        // node_modules is deleted because it's the root Module in the walked tree
+        expect(await fs.pathExists(nodeModulesPath)).to.be.false;
       });
     });
 
