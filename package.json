@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "prepublish": "npm run build",
-    "test": "nyc mocha test/*_spec.ts"
+    "lint": "tslint src/**/*.ts test/**/*.ts",
+    "mocha": "nyc mocha test/*_spec.ts",
+    "test": "npm run lint && npm run mocha"
   },
   "keywords": [
     "prune",
@@ -25,6 +27,7 @@
     "nyc": "^11.4.1",
     "tempy": "^0.2.1",
     "ts-node": "^4.1.0",
+    "tslint": "^5.9.1",
     "typescript": "^2.4.2"
   },
   "dependencies": {
@@ -33,9 +36,13 @@
     "fs-extra": "^4.0.0"
   },
   "nyc": {
-    "extension": [".ts"],
+    "extension": [
+      ".ts"
+    ],
     "instrument": true,
-    "require": ["ts-node/register"],
+    "require": [
+      "ts-node/register"
+    ],
     "sourceMap": true
   }
 }
