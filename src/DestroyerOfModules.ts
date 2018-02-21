@@ -5,6 +5,8 @@ import { DepType, Module, Walker } from 'flora-colossus';
 
 export type ShouldKeepModuleTest = (module: Module, isDevDep: boolean) => boolean;
 
+export type ModuleMap = Map<string, Module>;
+
 export class DestroyerOfModules {
   private walker: Walker;
   private shouldKeepFn: ShouldKeepModuleTest;
@@ -30,11 +32,9 @@ export class DestroyerOfModules {
     }
   }
 
-  public async destroyModule(modulePath: string, moduleMap: {
-    [path: string]: Module,
-  }) {
-    const module = moduleMap[modulePath];
-    if (module && this.shouldKeepModule(module)) {
+  public async destroyModule(modulePath: string, moduleMap: ModuleMap) {
+    const module = moduleMap.get(modulePath);
+    if (module) {
       const nodeModulesPath = path.resolve(modulePath, 'node_modules');
       if (!await fs.pathExists(nodeModulesPath)) {
         return;
@@ -60,15 +60,20 @@ export class DestroyerOfModules {
     }
   }
 
-  public async destroy() {
+  public async collectKeptModules(): Promise<ModuleMap> {
     const modules = await this.walker.walkTree();
-    const moduleMap: {
-      [path: string]: Module,
-    } = {};
+    const moduleMap: ModuleMap = new Map();
     for (const module of modules) {
-      moduleMap[module.path] = module;
+      if (this.shouldKeepModule(module)) {
+        moduleMap.set(module.path, module);
+      }
     }
-    await this.destroyModule(this.walker.getRootModule(), moduleMap);
+
+    return moduleMap;
+  }
+
+  public async destroy() {
+    await this.destroyModule(this.walker.getRootModule(), await this.collectKeptModules());
   }
 
   private shouldKeepModule(module: Module) {
