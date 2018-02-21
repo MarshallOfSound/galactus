@@ -1,7 +1,7 @@
+import { expect } from 'chai';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as tempy from 'tempy';
-import { expect } from 'chai';
 
 import * as galactus from '../src';
 
@@ -25,17 +25,17 @@ describe('DestroyerOfModules', () => {
 
     function appropriateDependenciesExist(description: string, prefix: string) {
       describe(description, () => {
-        it('keeps production dependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, `${prefix}-prod`))).to.be.true;
-        });
+        it('keeps production dependencies', async () =>
+          expect(await moduleExists(path.join(nodeModulesPath, `${prefix}-prod`))).to.be.true,
+        );
 
-        it('keeps optional dependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, `${prefix}-optional`))).to.be.true;
-        });
+        it('keeps optional dependencies', async () =>
+          expect(await moduleExists(path.join(nodeModulesPath, `${prefix}-optional`))).to.be.true,
+        );
 
-        it('prunes devDependencies', async () => {
-          expect(await moduleExists(path.join(nodeModulesPath, '${prefix}-dev'))).to.be.false;
-        });
+        it('prunes devDependencies', async () =>
+          expect(await moduleExists(path.join(nodeModulesPath, '${prefix}-dev'))).to.be.false,
+        );
       });
     }
 
@@ -57,7 +57,7 @@ describe('DestroyerOfModules', () => {
     describe('rootDirectory only specified', () => {
       beforeEach(async () => {
         const destroyer = new galactus.DestroyerOfModules({
-          rootDirectory: tempPackageDir
+          rootDirectory: tempPackageDir,
         });
         await destroyer.destroy();
       });
@@ -69,7 +69,7 @@ describe('DestroyerOfModules', () => {
       beforeEach(async () => {
         const walker = new galactus.Walker(tempPackageDir);
         const destroyer = new galactus.DestroyerOfModules({
-          walker: walker,
+          walker,
         });
         await destroyer.destroy();
       });
@@ -86,10 +86,10 @@ describe('DestroyerOfModules', () => {
         await destroyer.destroy();
       });
 
-      it('should delete node_modules', async () => {
+      it('should delete node_modules', async () =>
         // node_modules is deleted because it's the root Module in the walked tree
-        expect(await fs.pathExists(nodeModulesPath)).to.be.false;
-      });
+        expect(await fs.pathExists(nodeModulesPath)).to.be.false,
+      );
     });
 
     afterEach(async () => {

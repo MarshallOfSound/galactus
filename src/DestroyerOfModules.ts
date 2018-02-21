@@ -30,19 +30,15 @@ export class DestroyerOfModules {
     }
   }
 
-  private shouldKeepModule(module: Module) {
-    const isDevDep = module.depType === DepType.DEV;
-    const shouldKeep = this.shouldKeepFn ? this.shouldKeepFn(module, isDevDep) : !isDevDep;
-    return shouldKeep;
-  }
-
-  async destroyModule(modulePath: string, moduleMap: {
-    [path: string]: Module
+  public async destroyModule(modulePath: string, moduleMap: {
+    [path: string]: Module,
   }) {
     const module = moduleMap[modulePath];
     if (module && this.shouldKeepModule(module)) {
       const nodeModulesPath = path.resolve(modulePath, 'node_modules');
-      if (!await fs.pathExists(nodeModulesPath)) return;
+      if (!await fs.pathExists(nodeModulesPath)) {
+        return;
+      }
 
       for (const subModuleName of await fs.readdir(nodeModulesPath)) {
         if (subModuleName.startsWith('@')) {
@@ -64,14 +60,20 @@ export class DestroyerOfModules {
     }
   }
 
-  async destroy() {
+  public async destroy() {
     const modules = await this.walker.walkTree();
     const moduleMap: {
-      [path: string]: Module
+      [path: string]: Module,
     } = {};
     for (const module of modules) {
       moduleMap[module.path] = module;
     }
     await this.destroyModule(this.walker.getRootModule(), moduleMap);
+  }
+
+  private shouldKeepModule(module: Module) {
+    const isDevDep = module.depType === DepType.DEV;
+    const shouldKeep = this.shouldKeepFn ? this.shouldKeepFn(module, isDevDep) : !isDevDep;
+    return shouldKeep;
   }
 }
