@@ -92,6 +92,20 @@ describe('DestroyerOfModules', () => {
       );
     });
 
+    describe('relativePaths for collectKeptModules', () => {
+      let moduleMap: galactus.ModuleMap;
+      beforeEach(async () => {
+        const destroyer = new galactus.DestroyerOfModules({
+          rootDirectory: tempPackageDir,
+        });
+        moduleMap = await destroyer.collectKeptModules({ relativePaths: true });
+      });
+
+      it('should use relative paths', () =>
+        expect(moduleMap.has(path.join('node_modules', 'dep-prod'))).to.be.true,
+      );
+    });
+
     afterEach(async () => {
       await fs.remove(tempDir);
     });

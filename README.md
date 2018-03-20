@@ -40,3 +40,7 @@ Returns a `Promise` of a `ModuleMap` (a `Map` of paths to `Module`s). The
 `Promise` resolves when the walker finishes walking the module tree. The
 `ModuleMap` only contains the `Module`s that would be kept by a call
 to `destroy()`.
+
+There is one optional keyword argument, `relativePaths`. By default, the paths
+in the `ModuleMap` are absolute. If `relativePaths` is `true`, they are relative
+to the `rootDirectory` specified in the constructor.

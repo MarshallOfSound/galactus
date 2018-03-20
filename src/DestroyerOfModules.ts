@@ -60,12 +60,16 @@ export class DestroyerOfModules {
     }
   }
 
-  public async collectKeptModules(): Promise<ModuleMap> {
+  public async collectKeptModules({ relativePaths = false }: { relativePaths: boolean }): Promise<ModuleMap> {
     const modules = await this.walker.walkTree();
     const moduleMap: ModuleMap = new Map();
     for (const module of modules) {
       if (this.shouldKeepModule(module)) {
-        moduleMap.set(module.path, module);
+        let modulePath = module.path;
+        if (relativePaths) {
+          modulePath = modulePath.replace(`${this.walker.getRootModule()}${path.sep}`, '');
+        }
+        moduleMap.set(modulePath, module);
       }
     }
 
@@ -73,7 +77,7 @@ export class DestroyerOfModules {
   }
 
   public async destroy() {
-    await this.destroyModule(this.walker.getRootModule(), await this.collectKeptModules());
+    await this.destroyModule(this.walker.getRootModule(), await this.collectKeptModules({ relativePaths: false }));
   }
 
   private shouldKeepModule(module: Module) {
