@@ -82,7 +82,7 @@ export class DestroyerOfModules {
   }
 
   private shouldKeepModule(module: Module) {
-    const isDevDep = module.depType === DepType.DEV;
+    const isDevDep = module.depType === DepType.DEV || module.depType === DepType.DEV_OPTIONAL;
     const shouldKeep = this.shouldKeepFn ? this.shouldKeepFn(module, isDevDep) : !isDevDep;
     return shouldKeep;
   }
