@@ -106,6 +106,27 @@ describe('DestroyerOfModules', () => {
       );
     });
 
+    describe('relativePaths for collectKeptModules with a relative root directory', () => {
+      let moduleMap: galactus.ModuleMap;
+      let oldCurrentDir: string;
+      beforeEach(async () => {
+        oldCurrentDir = process.cwd();
+        process.chdir(tempPackageDir);
+        const destroyer = new galactus.DestroyerOfModules({
+          rootDirectory: '.',
+        });
+        moduleMap = await destroyer.collectKeptModules({ relativePaths: true });
+      });
+
+      it('should use relative paths', () =>
+        expect(moduleMap.has(path.join('node_modules', 'dep-prod'))).to.be.true,
+      );
+
+      afterEach(() => {
+        process.chdir(oldCurrentDir);
+      });
+    });
+
     afterEach(async () => {
       await fs.remove(tempDir);
     });
