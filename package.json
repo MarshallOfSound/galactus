@@ -44,5 +44,13 @@
       "ts-node/register"
     ],
     "sourceMap": true
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marshallOfSound/galactus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marshallOfSound/galactus/issues"
+  },
+  "homepage": "https://github.com/marshallOfSound/galactus#readme"
 }
