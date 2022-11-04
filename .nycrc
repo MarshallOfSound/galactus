@@ -1,0 +1,10 @@
+{
+  "extension": [
+    ".ts"
+  ],
+  "instrument": true,
+  "require": [
+    "ts-node/register"
+  ],
+  "sourceMap": true
+}

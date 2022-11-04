@@ -35,16 +35,6 @@
     "flora-colossus": "^1.0.0",
     "fs-extra": "^4.0.0"
   },
-  "nyc": {
-    "extension": [
-      ".ts"
-    ],
-    "instrument": true,
-    "require": [
-      "ts-node/register"
-    ],
-    "sourceMap": true
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/marshallOfSound/galactus.git"
