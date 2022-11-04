@@ -42,5 +42,9 @@
   "bugs": {
     "url": "https://github.com/marshallOfSound/galactus/issues"
   },
-  "homepage": "https://github.com/marshallOfSound/galactus#readme"
+  "homepage": "https://github.com/marshallOfSound/galactus#readme",
+  "files": [
+    "lib/*",
+    "README.md"
+  ]
 }
