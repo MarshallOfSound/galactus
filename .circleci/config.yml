@@ -1,0 +1,35 @@
+step-restore-cache: &step-restore-cache
+  restore_cache:
+    keys:
+      - v1-dependencies-{{ arch }}-{{ checksum "yarn.lock" }}
+      - v1-dependencies-{{ arch }}
+
+steps-test: &steps-test
+  steps:
+    - run: git config --global core.autocrlf input
+    - checkout
+    - *step-restore-cache
+    - run: yarn --frozen-lockfile
+    - save_cache:
+        paths:
+          - node_modules
+        key: v1-dependencies-{{ arch }}-{{ checksum "yarn.lock" }}
+    - run: yarn test
+
+version: 2.1
+jobs:
+  test-linux-12:
+    docker:
+      - image: cimg/node:12.13
+    <<: *steps-test
+  test-linux-14:
+    docker:
+      - image: cimg/node:14.17
+    <<: *steps-test
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test-linux-12
+      - test-linux-14
