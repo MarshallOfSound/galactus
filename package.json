@@ -1,6 +1,6 @@
 {
   "name": "galactus",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "Prunes dependencies from your package",
   "main": "lib/index.js",
   "scripts": {
