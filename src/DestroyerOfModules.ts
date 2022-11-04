@@ -9,7 +9,7 @@ export type ModuleMap = Map<string, Module>;
 
 export class DestroyerOfModules {
   private walker: Walker;
-  private shouldKeepFn: ShouldKeepModuleTest;
+  private shouldKeepFn?: ShouldKeepModuleTest;
 
   constructor({
     rootDirectory,
