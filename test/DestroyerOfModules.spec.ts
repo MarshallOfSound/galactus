@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
@@ -19,7 +20,7 @@ describe('DestroyerOfModules', () => {
     const creator = () => new galactus.DestroyerOfModules({});
 
     it('should throw an error', () => {
-      expect(creator).to.throw(/Must either provide rootDirectory or walker argument/);
+      expect(creator).toThrow(/Must either provide rootDirectory or walker argument/);
     });
   });
 
@@ -31,16 +32,13 @@ describe('DestroyerOfModules', () => {
     function appropriateDependenciesExist(description: string, prefix: string) {
       describe(description, () => {
         it('keeps production dependencies', async () =>
-          expect(await moduleExists(path.join(nodeModulesPath, `${prefix}-prod`))).to.be.true,
-        );
+          expect(await moduleExists(path.join(nodeModulesPath, `${prefix}-prod`))).toBe(true));
 
         it('keeps optional dependencies', async () =>
-          expect(await moduleExists(path.join(nodeModulesPath, `${prefix}-optional`))).to.be.true,
-        );
+          expect(await moduleExists(path.join(nodeModulesPath, `${prefix}-optional`))).toBe(true));
 
         it('prunes devDependencies', async () =>
-          expect(await moduleExists(path.join(nodeModulesPath, '${prefix}-dev'))).to.be.false,
-        );
+          expect(await moduleExists(path.join(nodeModulesPath, '${prefix}-dev'))).toBe(false));
       });
     }
 
@@ -55,9 +53,13 @@ describe('DestroyerOfModules', () => {
       tempPackageDir = path.join(tempDir, 'package');
       nodeModulesPath = path.join(tempPackageDir, 'node_modules');
 
-      await fs.cp(path.join(import.meta.dirname, 'fixtures', 'package'), tempPackageDir, {
-        recursive: true,
-      });
+      await fs.cp(
+        path.join(new URL('.', import.meta.url).pathname, 'fixtures', 'package'),
+        tempPackageDir,
+        {
+          recursive: true,
+        },
+      );
       await fs.rename(path.join(tempPackageDir, '_node_modules'), nodeModulesPath);
     });
 
@@ -95,8 +97,7 @@ describe('DestroyerOfModules', () => {
 
       it('should delete node_modules', async () =>
         // node_modules is deleted because it's the root Module in the walked tree
-        expect(await moduleExists(nodeModulesPath)).to.be.false,
-      );
+        expect(await moduleExists(nodeModulesPath)).toBe(false));
     });
 
     describe('relativePaths for collectKeptModules', () => {
@@ -109,8 +110,7 @@ describe('DestroyerOfModules', () => {
       });
 
       it('should use relative paths', () =>
-        expect(moduleMap.has(path.join('node_modules', 'dep-prod'))).to.be.true,
-      );
+        expect(moduleMap.has(path.join('node_modules', 'dep-prod'))).toBe(true));
     });
 
     describe('relativePaths for collectKeptModules with a relative root directory', () => {
@@ -126,8 +126,7 @@ describe('DestroyerOfModules', () => {
       });
 
       it('should use relative paths', () =>
-        expect(moduleMap.has(path.join('node_modules', 'dep-prod'))).to.be.true,
-      );
+        expect(moduleMap.has(path.join('node_modules', 'dep-prod'))).toBe(true));
 
       afterEach(() => {
         process.chdir(oldCurrentDir);

@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
-import * as path from 'path';
+import * as path from 'node:path';
 
 import { DepType, Module, Walker } from 'flora-colossus';
 
@@ -19,7 +19,7 @@ export class DestroyerOfModules {
   }: {
     rootDirectory?: string;
     walker?: Walker;
-    shouldKeepModuleTest?: ShouldKeepModuleTest,
+    shouldKeepModuleTest?: ShouldKeepModuleTest;
   }) {
     if (rootDirectory) {
       this.walker = new Walker(rootDirectory);
@@ -43,17 +43,16 @@ export class DestroyerOfModules {
 
       for (const subModuleName of await fs.readdir(nodeModulesPath)) {
         if (subModuleName.startsWith('@')) {
-          for (const subScopedModuleName of await fs.readdir(path.resolve(nodeModulesPath, subModuleName))) {
+          for (const subScopedModuleName of await fs.readdir(
+            path.resolve(nodeModulesPath, subModuleName),
+          )) {
             await this.destroyModule(
               path.resolve(nodeModulesPath, subModuleName, subScopedModuleName),
               moduleMap,
             );
           }
         } else {
-          await this.destroyModule(
-            path.resolve(nodeModulesPath, subModuleName),
-            moduleMap,
-          );
+          await this.destroyModule(path.resolve(nodeModulesPath, subModuleName), moduleMap);
         }
       }
     } else {
@@ -63,7 +62,11 @@ export class DestroyerOfModules {
     }
   }
 
-  public async collectKeptModules({ relativePaths = false }: { relativePaths: boolean }): Promise<ModuleMap> {
+  public async collectKeptModules({
+    relativePaths = false,
+  }: {
+    relativePaths: boolean;
+  }): Promise<ModuleMap> {
     const modules = await this.walker.walkTree();
     const moduleMap: ModuleMap = new Map();
     const rootPath = path.resolve(this.walker.getRootModule());
@@ -81,7 +84,10 @@ export class DestroyerOfModules {
   }
 
   public async destroy() {
-    await this.destroyModule(this.walker.getRootModule(), await this.collectKeptModules({ relativePaths: false }));
+    await this.destroyModule(
+      this.walker.getRootModule(),
+      await this.collectKeptModules({ relativePaths: false }),
+    );
   }
 
   private shouldKeepModule(module: Module) {
