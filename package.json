@@ -26,7 +26,7 @@
   "license": "MIT",
   "dependencies": {
     "debug": "^4.4.1",
-    "flora-colossus": "^2.0.0"
+    "flora-colossus": "^3.0.2"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
