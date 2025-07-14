@@ -1,33 +1,10 @@
 {
+  "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
-    "removeComments": false,
-    "preserveConstEnums": true,
     "sourceMap": true,
-    "declaration": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "strictNullChecks": true,
-    "noUnusedLocals": true,
-    "noImplicitThis": true,
-    "noUnusedParameters": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "pretty": true,
-    "target": "es2018",
-    "outDir": "lib",
-    "lib":[
-      "es2018"
-    ],
-    "strict": true
+    "outDir": "dist",
+    "types": ["node"],
+    "declaration": true
   },
-  "formatCodeOptions": {
-    "indentSize": 2,
-    "tabSize": 2
-  },
-  "exclude": [
-    "node_modules",
-    "lib",
-    "test"
-  ]
+  "include": ["src"]
 }

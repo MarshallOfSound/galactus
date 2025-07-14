@@ -1,4 +1,5 @@
-import * as fs from 'fs-extra';
+import { existsSync } from 'node:fs';
+import * as fs from 'node:fs/promises';
 import * as path from 'path';
 
 import { DepType, Module, Walker } from 'flora-colossus';
@@ -36,7 +37,7 @@ export class DestroyerOfModules {
     const module = moduleMap.get(modulePath);
     if (module) {
       const nodeModulesPath = path.resolve(modulePath, 'node_modules');
-      if (!await fs.pathExists(nodeModulesPath)) {
+      if (!existsSync(nodeModulesPath)) {
         return;
       }
 
@@ -56,7 +57,9 @@ export class DestroyerOfModules {
         }
       }
     } else {
-      await fs.remove(modulePath);
+      await fs.rm(modulePath, {
+        recursive: true,
+      });
     }
   }
 

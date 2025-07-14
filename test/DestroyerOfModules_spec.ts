@@ -1,12 +1,17 @@
 import { expect } from 'chai';
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as tempy from 'tempy';
+import * as fs from 'node:fs/promises';
+import * as os from 'node:os';
+import * as path from 'node:path';
 
-import * as galactus from '../src';
+import * as galactus from '../dist/index.js';
 
 async function moduleExists(modulePath: string) {
-  return fs.pathExists(path.join(modulePath, 'package.json'));
+  try {
+    await fs.access(path.join(modulePath, 'package.json'));
+  } catch {
+    return false;
+  }
+  return true;
 }
 
 describe('DestroyerOfModules', () => {
@@ -46,11 +51,13 @@ describe('DestroyerOfModules', () => {
     }
 
     beforeEach(async () => {
-      tempDir = tempy.directory();
+      tempDir = await fs.mkdtemp(path.resolve(os.tmpdir(), 'galactus-spec-'));
       tempPackageDir = path.join(tempDir, 'package');
       nodeModulesPath = path.join(tempPackageDir, 'node_modules');
 
-      await fs.copy(path.join(__dirname, 'fixtures', 'package'), tempPackageDir);
+      await fs.cp(path.join(import.meta.dirname, 'fixtures', 'package'), tempPackageDir, {
+        recursive: true,
+      });
       await fs.rename(path.join(tempPackageDir, '_node_modules'), nodeModulesPath);
     });
 
@@ -88,7 +95,7 @@ describe('DestroyerOfModules', () => {
 
       it('should delete node_modules', async () =>
         // node_modules is deleted because it's the root Module in the walked tree
-        expect(await fs.pathExists(nodeModulesPath)).to.be.false,
+        expect(await moduleExists(nodeModulesPath)).to.be.false,
       );
     });
 
@@ -128,7 +135,10 @@ describe('DestroyerOfModules', () => {
     });
 
     afterEach(async () => {
-      await fs.remove(tempDir);
+      await fs.rm(tempDir, {
+        recursive: true,
+        force: true,
+      });
     });
   });
 });

@@ -1,2 +1,2 @@
-export * from './DestroyerOfModules';
+export * from './DestroyerOfModules.js';
 export * from 'flora-colossus';
