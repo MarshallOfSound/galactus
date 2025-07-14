@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import * as galactus from '../dist/index.js';
 
@@ -54,7 +55,7 @@ describe('DestroyerOfModules', () => {
       nodeModulesPath = path.join(tempPackageDir, 'node_modules');
 
       await fs.cp(
-        path.join(new URL('.', import.meta.url).pathname, 'fixtures', 'package'),
+        path.join(fileURLToPath(new URL('.', import.meta.url)), 'fixtures', 'package'),
         tempPackageDir,
         {
           recursive: true,
